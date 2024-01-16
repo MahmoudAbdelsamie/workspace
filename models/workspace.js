@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 
 const Workspace = sequelize.define('Workspace', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER, 
         autoIncrement: true,
         allowNull: false,
         primaryKey: true,

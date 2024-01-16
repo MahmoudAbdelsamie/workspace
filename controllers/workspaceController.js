@@ -1,9 +1,31 @@
 const multer = require('multer');
 const sizeOf = require('image-size');
+const jwt = require('jsonwebtoken');
 const { validationResult, check } = require('express-validator')
 const Workspace = require('../models/workspace');
 
 const storage = multer.memoryStorage();
+
+
+const JWT_SECRET = "mahmoudSecret";
+
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authentication');
+    if( !token ) {
+        return res.status(401).json({ status_code: 403, message: 'Forbidden' });
+    }
+
+    try {
+        const user = jwt.verify(token, JWT_SECRET);
+        req.user = user;
+        next();
+    } catch(error) {
+        return res.status(401).json({ status_code: 401, message: 'Invalid token' });
+    }
+};
+
+
+
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
@@ -30,7 +52,8 @@ const validateWorkspaceInputs = [
 
 ];
 
-exports.createWorkspace = [
+const createWorkspace = [
+    authenticateToken,
     ...validateWorkspaceInputs,
     async (req, res) => {
         try {
@@ -79,7 +102,8 @@ exports.createWorkspace = [
 ];
 
 
-exports.updateWorkspace = [
+const updateWorkspace = [
+    authenticateToken,
     ...validateWorkspaceInputs,
     async (req, res) => {
         try {
@@ -132,3 +156,4 @@ exports.updateWorkspace = [
 
 
 
+module.exports = { createWorkspace, updateWorkspace, authenticateToken }
