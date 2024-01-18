@@ -109,5 +109,46 @@ const updateWorkspace = [
 
 
 
+const deleteWorkspace = async (req, res) => {
+    try {
+        const workspaceId = req.params.id;
+        const workspace = await Workspace.findByPk(workspaceId);
+
+        if( !workspace ) {
+            return res.status(404).json({ error: 'Workspace not found.' });
+
+        }
+
+        if( workspace.UserId !== req.user.id ) {
+            return res.status(403).json({ error: 'Permission denied.'});
+        }
+
+        await workspace.destroy();
+
+        return res.status(204).json();
+    } catch(error){
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+const getWorkspace = async (req, res) => {
+    try {
+        const workspaceId = req.params.id;
+        const workspace = await Workspace.findByPk(workspaceId);
+        if( !workspace ) {
+            return res.status(404).json({ error: 'Workspace not found.'});
+        }
+
+        if( workspace.UserId !== req.user.id ) {
+            return res.status(403).json({ error: 'Permission denied.'});
+        }
+
+        return res.status(200).json(workspace);
+    } catch(error) {
+        res.status(500).json({ error: 'Internal Server Error'});
+    }
+};
+
 
 module.exports = { createWorkspace, updateWorkspace, deleteWorkspace, getWorkspace }
