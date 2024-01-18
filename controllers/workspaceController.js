@@ -1,56 +1,9 @@
-const multer = require('multer');
 const sizeOf = require('image-size');
-const jwt = require('jsonwebtoken');
-const { validationResult, check } = require('express-validator')
+const { validationResult } = require('express-validator')
 const Workspace = require('../models/workspace');
+const validateWorkspaceInputs = require('../validations/workspaceValidation').validateWorkspaceInputs;
+const { authenticateToken, upload } = require('../helper_functions')
 
-const storage = multer.memoryStorage();
-
-
-const JWT_SECRET = "mahmoudSecret";
-
-const authenticateToken = (req, res, next) => {
-    const token = req.header('Authentication');
-    if( !token ) {
-        return res.status(401).json({ status_code: 403, message: 'Forbidden' });
-    }
-
-    try {
-        const user = jwt.verify(token, JWT_SECRET);
-        req.user = user;
-        next();
-    } catch(error) {
-        return res.status(401).json({ status_code: 401, message: 'Invalid token' });
-    }
-};
-
-
-
-
-const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if(allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb( new Error ('Invalid file type. Only JPEG, JPG, and PNG are allowed.'), false);
-    }
-};
-
-
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: fileFilter,
-});
-
-const validateWorkspaceInputs = [
-    check('name').notEmpty().withMessage('Workspace name is required'),
-    check('numPeople').notEmpty().withMessage('Number of People must be provided'),
-    check('industry').notEmpty().withMessage('Industry must be provided.'),
-    check('userRole').notEmpty().withMessage('User Role must be included.'),
-
-
-];
 
 const createWorkspace = [
     authenticateToken,
@@ -156,4 +109,5 @@ const updateWorkspace = [
 
 
 
-module.exports = { createWorkspace, updateWorkspace, authenticateToken }
+
+module.exports = { createWorkspace, updateWorkspace, deleteWorkspace, getWorkspace }
