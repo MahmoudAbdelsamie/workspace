@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const UserWorkspace = require('./userWorkspace');
+const Space = require('./space');
 
 const Workspace = sequelize.define('Workspace', {
     id: {
@@ -46,5 +48,8 @@ const Workspace = sequelize.define('Workspace', {
     }
     
 );
+
+Workspace.belongsToMany(User, { through: UserWorkspace})
+Workspace.belongsToMany(Space, { through: 'SpaceWorkspace'})
 
 module.exports = Workspace;

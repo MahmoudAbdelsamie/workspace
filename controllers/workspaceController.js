@@ -3,6 +3,43 @@ const { validationResult } = require('express-validator')
 const Workspace = require('../models/workspace');
 const validateWorkspaceInputs = require('../validations/workspaceValidation').validateWorkspaceInputs;
 const { authenticateToken, upload } = require('../helper_functions')
+const User = require('../models/user');
+
+
+
+const addUsersToWorkspace = async (req, res) => {
+    try {
+        const { workspaceId, userIds } = req.body;
+        if( !workspaceId || !userIds || !Array.isArray(userIds) ) {
+            return res.status(404).json( { error: 'Workspace not found' });
+        }
+
+        const workspace = await Workspace.findByPk(workspaceId);
+
+        if(!workspace) {
+            return res.status(404).json({ error: 'Workspace not found'})
+        }
+
+        const users = await User.findAll({ where: { id: userIds } });
+
+        if(users.length !== userIds.length) {
+            return res.status(404).json( { error: 'One or more users not found'});
+        }
+
+        await workspace.addUsers(users);
+        return res.status(200).json({ message : 'Users added to workspace successfully'})
+
+    } catch(error) {
+        return res.status(500).json({ error: 'Internal Server Error'});
+    }
+}
+
+
+
+
+
+
+
 
 
 const createWorkspace = [
@@ -151,4 +188,4 @@ const getWorkspace = async (req, res) => {
 };
 
 
-module.exports = { createWorkspace, updateWorkspace, deleteWorkspace, getWorkspace }
+module.exports = { createWorkspace, updateWorkspace, deleteWorkspace, getWorkspace, addUsersToWorkspace }

@@ -8,4 +8,9 @@ router.put('/:id/update', workspaceController.updateWorkspace);
 router.delete('/:id/delete', workspaceController.deleteWorkspace);
 router.get('/:id', workspaceController.getWorkspace);
 
+
+// Add Users to Workspace 
+router.post('/addUsers', workspaceController.addUsersToWorkspace);
+
+
 module.exports = router;

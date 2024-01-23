@@ -1,6 +1,9 @@
 const Workspace = require("./workspace");
 const Sequelize = require("sequelize");
 const sequelize = require("../config/database");
+const UserWorkspace = require("./userWorkspace");
+const Space = require("./space");
+
 
 const User = sequelize.define(
   "users",
@@ -35,7 +38,9 @@ const User = sequelize.define(
 );
 
 
-User.hasMany(Workspace);
-Workspace.belongsTo(User);
+// User.hasMany(Workspace);
+User.belongsToMany(Workspace, { through: UserWorkspace });
+User.belongsToMany(Space, { through: UserWorkspace})
+// Workspace.belongsTo(User);
 
 module.exports = User;
