@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3007;
 
 const workspaceRouter = require('./routes/workspace')
 const userRouter = require('./routes/user')
+const spaceRouter = require('./routes/space')
+const listRouter = require('./routes/list')
+
 
 
 app.use(bodyParser.json());
@@ -17,6 +20,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/user', userRouter);
 app.use('/workspace', workspaceRouter);
+app.use('/space', spaceRouter);
+app.use('/list', listRouter);
 
 
 

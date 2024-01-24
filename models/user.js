@@ -38,9 +38,9 @@ const User = sequelize.define(
 );
 
 
-// User.hasMany(Workspace);
+User.hasMany(Workspace);
 User.belongsToMany(Workspace, { through: UserWorkspace });
 User.belongsToMany(Space, { through: UserWorkspace})
-// Workspace.belongsTo(User);
+Workspace.belongsTo(User);
 
 module.exports = User;
