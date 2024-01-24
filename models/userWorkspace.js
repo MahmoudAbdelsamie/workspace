@@ -15,7 +15,16 @@ const UserWorkspace = sequelize.define('UserWorkspace', {
         allowNull: false,
         defaultvalue: "member",
     },
+    deletedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
+},
+    {
+        paranoid: true,
+        deletedAt: "deletedAt",
+    }
 
-});
+);
 
 module.exports = UserWorkspace;
